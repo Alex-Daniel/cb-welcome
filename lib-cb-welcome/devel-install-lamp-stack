@@ -13,9 +13,9 @@ echo "  -----------------------------[ screen $STEP of $STEPS ]-----------------
   Note: additional packages listed as dependencies will also be installed."
 
 if prompt "  Would you like to install LAMP stack?"; then
-	sudo apt-get install -y cb-meta-lamp
+    sudo apt-get install -y cb-meta-lamp
 
-	# Enable modrewrite - does this work?
+    # Enable modrewrite - does this work?
     A2D='/etc/apache2/sites-available'
     if [[ -f $A2D/default ]]; then
         sudo touch "$A2D/default2"
@@ -27,10 +27,10 @@ if prompt "  Would you like to install LAMP stack?"; then
         sudo a2enmod rewrite
         sudo /etc/init.d/apache2 restart
     fi
-		
-	clear
-		
-	echo "  INSTALL LAMP STACK - CONTINUED
+    
+    clear
+    
+echo "  INSTALL LAMP STACK - CONTINUED
   ------------------------------
   Would you like to create a symlink within Apache's document root directory
   to a directory within your home directory? If you do this, you will be able
@@ -43,8 +43,8 @@ if prompt "  Would you like to install LAMP stack?"; then
   Note: if this system is used by multiple users, you may want to consider
   using apache2's 'userdir' module instead."
   
-	if prompt "  Would you like to create the symlink?"; then
+    if prompt "  Would you like to create the symlink?"; then
         mkdir -p "/home/$USER/htdocs"
-		sudo ln -s "/home/$USER/htdocs" "/var/www/$USER"
-	fi
+        sudo ln -s "/home/$USER/htdocs" "/var/www/$USER"
+    fi
 fi

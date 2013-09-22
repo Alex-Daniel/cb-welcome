@@ -43,10 +43,10 @@ fi
 
 # Import prompt
 if [[ -f ${LIBDIR}/prompt ]]; then
-	source "${LIBDIR}/prompt"
+    source "${LIBDIR}/prompt"
 else
-	echo 'Error: Failed to locate prompt'
-	exit 1
+    echo 'Error: Failed to locate prompt'
+    exit 1
 fi
 
 # Run through steps

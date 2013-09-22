@@ -8,5 +8,5 @@ echo "  -----------------------------[ screen $STEP of $STEPS ]-----------------
   used packages used for developing software."
   
 if prompt "  Would you like to view these options/screens?"; then
-	DEVEL=true
+    DEVEL=true
 fi

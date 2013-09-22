@@ -10,5 +10,5 @@ echo "  -----------------------------[ screen $STEP of $STEPS ]-----------------
       sudo apt-get dist-upgrade"
 
 if prompt "  Whould you like to update your system now?"; then
-	sudo apt-get dist-upgrade -y
+    sudo apt-get dist-upgrade -y
 fi

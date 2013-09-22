@@ -10,7 +10,7 @@ echo "  -----------------------------[ screen $STEP of $STEPS ]-----------------
       sudo apt-get update"
 
 if prompt "  Would you like to update your software sources?"; then
-	sudo apt-get update
+    sudo apt-get update
 else
-	exit 0
+    exit 0
 fi

@@ -15,5 +15,5 @@ echo "  -----------------------------[ screen $STEP of $STEPS ]-----------------
   For more information see: http://www.openssh.com/"
 
 if prompt "  Would you like to install openssh-server?"; then
-	sudo apt-get install -y cb-meta-ssh
+    sudo apt-get install -y cb-meta-ssh
 fi

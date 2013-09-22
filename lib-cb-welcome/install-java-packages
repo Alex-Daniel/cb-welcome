@@ -13,5 +13,5 @@ echo "  -----------------------------[ screen $STEP of $STEPS ]-----------------
   Note: additional packages listed as dependencies will also be installed."
 
 if prompt "  Would you like to install Java?"; then
-	sudo apt-get install -y cb-meta-java
+    sudo apt-get install -y cb-meta-java
 fi
