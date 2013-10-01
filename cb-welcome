@@ -2,8 +2,8 @@
 # Post installation script
 
 createFlag() {
-    mkdir -p "/home/$USER/.config/crunchbang"
-    touch "/home/$USER/.config/crunchbang/cb-welcome"
+    mkdir -p "$HOME/.config/crunchbang"
+    touch "$HOME/.config/crunchbang/cb-welcome"
 }
 
 runInTerminal() {
@@ -11,9 +11,29 @@ runInTerminal() {
     exit 0
 }
 
+# Usage: installPage title text package...
+installPage() {
+    clear
+
+    say "-----------------------------[ screen $STEP of $STEPS ]----------------------------"
+    echo
+    say "INSTALL ${1^^}"
+    say '------------------'
+    say "$2"
+    echo
+    say 'If you choose to do this, the following packages will be installed:'
+    say '  ${@:3}'
+    echo
+    say 'Note: additional packages listed as dependencies will also be installed.'
+    echo
+    if prompt "  Would you like to install $1"; then
+        sudo apt-get install -y cb-meta-ssh
+    fi
+}
+
 # First run
 if [[ $1 = '--firstrun' ]]; then
-    if [[ -d /live/overlay || -e /home/$USER/.config/crunchbang/cb-welcome || ! $(groups) =~ ( |^)sudo( |$) ]]; then
+    if [[ -d /live/overlay || -e $HOME/.config/crunchbang/cb-welcome || ! $(groups) =~ ( |^)sudo( |$) ]]; then
         exit 1
     fi
     runInTerminal
