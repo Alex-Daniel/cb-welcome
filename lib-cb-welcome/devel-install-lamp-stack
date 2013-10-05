@@ -15,15 +15,10 @@ echo "  -----------------------------[ screen $STEP of $STEPS ]-----------------
 if prompt "  Would you like to install LAMP stack?"; then
     sudo apt-get install -y cb-meta-lamp
 
-    # Enable modrewrite - does this work?
+    # Enable modrewrite # TODO: does this work?
     A2D='/etc/apache2/sites-available'
     if [[ -f $A2D/default ]]; then
-        sudo touch "$A2D/default2"
-        sudo chown "$USER:$USER" "$A2D/default2"
-        sudo chown "$USER:$USER" "$A2D/default"
-        sudo cat "$A2D/default" | sed '9,14 s/AllowOverride None/AllowOverride All/' > "$A2D/default2"
-        sudo mv -f "$A2D/default2" "$A2D/default"
-        sudo chown root:root "$A2D/default"
+        sudo sed -i '9,14 s/AllowOverride None/AllowOverride All/' "$A2D/default"
         sudo a2enmod rewrite
         sudo /etc/init.d/apache2 restart
     fi
@@ -38,13 +33,13 @@ echo "  INSTALL LAMP STACK - CONTINUED
 
       http://localhost/$USER/
 
-  The file path will be: /home/$USER/htdocs
+  The file path will be: $HOME/htdocs
 
   Note: if this system is used by multiple users, you may want to consider
   using apache2's 'userdir' module instead."
   
     if prompt "  Would you like to create the symlink?"; then
-        mkdir -p "/home/$USER/htdocs"
-        sudo ln -s "/home/$USER/htdocs" "/var/www/$USER"
+        mkdir -p "$HOME/htdocs"
+        sudo ln -s "$HOME/htdocs" "/var/www/$USER"
     fi
 fi

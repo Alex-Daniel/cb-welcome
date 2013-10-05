@@ -6,8 +6,8 @@ echo "  -----------------------------[ screen $STEP of $STEPS ]-----------------
   | |_| |  _| | |   | |  | | | |
   |  _  | |___| |___| |__| |_| |
   |_| |_|_____|_____|_____\___/ 
-                              
-  Welcome to CrunchBang Linux! :)
+                              "
+echo '  Welcome to CrunchBang Linux! :)
 
   This is an optional post-installation script, designed to help you configure
   your new Linux installation and get the most out of CrunchBang.
@@ -19,11 +19,11 @@ echo "  -----------------------------[ screen $STEP of $STEPS ]-----------------
   so already, please configure your internet connection.
 
   If you do not want to run this script now, you can run it at a later date
-  by entering the command \"cb-welcome\" in your terminal.
+  by entering the command "cb-welcome" in your terminal.
 
-  Hit any key to continue, or \"q\" to quit..."
+  Hit any key to continue, or "q" to quit...'
 
-read -n1 a
+read -srn1 a
 if [[ ${a^} = 'Q' ]]; then
     clear
     exit 0

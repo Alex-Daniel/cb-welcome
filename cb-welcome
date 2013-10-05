@@ -15,27 +15,24 @@ runInTerminal() {
 installPage() {
     clear
 
-    say "-----------------------------[ screen $STEP of $STEPS ]----------------------------"
-    echo
+    say "----------------------[ screen $STEP of $STEPS ]----------------------"
+    say
     say "INSTALL ${1^^}"
     say '------------------'
     say "$2"
-    echo
+    say
     say 'If you choose to do this, the following packages will be installed:'
-    say '  ${@:3}'
-    echo
+    say "  ${@:3}"
+    say
     say 'Note: additional packages listed as dependencies will also be installed.'
-    echo
-    if prompt "  Would you like to install $1"; then
-        sudo apt-get install -y cb-meta-ssh
-    fi
+    say
+    prompt "  Would you like to install $1" &&
+        sudo apt-get install -y "${@:3}"
 }
 
 # First run
 if [[ $1 = '--firstrun' ]]; then
-    if [[ -d /live/overlay || -e $HOME/.config/crunchbang/cb-welcome || ! $(groups) =~ ( |^)sudo( |$) ]]; then
-        exit 1
-    fi
+    [[ -d /live/overlay || -e $HOME/.config/crunchbang/cb-welcome || ! $(groups) =~ ( |^)sudo( |$) ]] && exit 1
     runInTerminal
 fi
 
@@ -46,26 +43,15 @@ fi
 
 createFlag
 
-if ! [[ $(groups) =~ ( |^)sudo( |$) ]]; then
-  echo 'Error: must be a member of the sudo group to run this script.' # TODO 'root' user is not a member of the sudo group. Is it meant to restrict root from executing this script?
+if [[ ! $(groups) =~ ( |^)sudo( |$) ]]; then
+  say 'Error: must be a member of the sudo group to run this script.' # TODO 'root' user is not a member of the sudo group. Is it meant to restrict root from executing this script?
   exit 1
 fi
 
 LIBDIR='/usr/lib/lib-cb-welcome'
 
-# Importing variables and functions from cb-include.cfg
-if [[ -f /usr/bin/cb-include.cfg ]]; then # TODO remove cb-include.cfg. Currently it has only one poorly written function to check internet connection.
-    source '/usr/bin/cb-include.cfg'
-else
-    echo 'Error: Failed to locate cb-include.cfg'
-    exit 1
-fi
-
-# Import prompt
-if [[ -f ${LIBDIR}/prompt ]]; then
-    source "${LIBDIR}/prompt"
-else
-    echo 'Error: Failed to locate prompt'
+if ! . cb-include.cfg 2> /dev/null; then
+    echo '  Failed to locate cb-include.cfg in PATH' >&2
     exit 1
 fi
 
@@ -76,6 +62,7 @@ STEP=1
 (( STEPS = ${#STEPS_BASIC[@]} + ${#STEPS_DEVEL[@]} + 2 )) # 2 is intro and fini
 
 . "$LIBDIR/intro"
+clear
 connectiontest
 
 for curStep in "${STEPS_BASIC[@]}"; do

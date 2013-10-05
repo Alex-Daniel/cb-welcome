@@ -1,1 +1,3 @@
-installPage 'openssh server' $'OpenSSH is a FREE version of the SSH connectivity tools that technical users of the Internet rely on. Would like to install OpenSSH server?\n\nFor more information see: http://www.openssh.com/' 'cb-meta-ssh'
+TEXT_INSTALL_SSHSERVER=$'OpenSSH is a FREE version of the SSH connectivity tools that technical users of the Internet rely on. Would like to install OpenSSH server?\n\nFor more information see: http://www.openssh.com/'
+
+installPage 'openssh server' "$TEXT_INSTALL_SSHSERVER" 'cb-meta-ssh'
