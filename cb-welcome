@@ -1,6 +1,10 @@
 #!/bin/bash
 # Post installation script
 
+CB_WELCOME_LIBDIR='/usr/lib/lib-cb-welcome'
+STEPS_BASIC=('apt-update' 'apt-dist-upgrade' 'install-printer-packages' 'install-java-packages' 'install-libreoffice' 'devel')
+STEPS_DEVEL=('devel-install-version-control-tools' 'devel-install-ssh-server' 'devel-install-lamp-stack' 'devel-install-packaging-tools')
+
 createFlag() {
     mkdir -p "$HOME/.config/crunchbang"
     touch "$HOME/.config/crunchbang/cb-welcome"
@@ -11,72 +15,87 @@ runInTerminal() {
     exit 0
 }
 
-# Usage: installPage title text package...
-installPage() {
-    clear
-
-    say "----------------------[ screen $STEP of $STEPS ]----------------------"
-    say
-    say "INSTALL ${1^^}"
-    say '------------------'
-    say "$2"
-    say
-    say 'If you choose to do this, the following packages will be installed:'
-    say "  ${@:3}"
-    say
-    say 'Note: additional packages listed as dependencies will also be installed.'
-    say
-    prompt "  Would you like to install $1" &&
-        sudo apt-get install -y "${@:3}"
+# prints something like -------[ step 1 of 10 ]-------
+header() {
+    local headerLength=$((76 - 4)) # 4 is for '[  ]' # but why 76???
+    local headerText=$(printf $"screen %d of %d" "$STEP" "$STEPS")
+    dashesStart=$( printf "%$(( (headerLength - ${#headerText}) / 2 ))s" )
+    dashesEnd=$( printf "%$(( (headerLength - ${#headerText}) / 2 + (headerLength - ${#headerText}) % 2 ))s" )
+    echo "  ${dashesStart// /-}[ ${headerText} ]${dashesEnd// /-}"
 }
 
-# First run
-if [[ $1 = '--firstrun' ]]; then
+# Usage: setupPage title text prompt
+setupPage() {
+    clear
+    header
+    say
+    say "$1" # title
+    titleDelimiter=$( printf "%${#1}s" )
+    say "${titleDelimiter// /-}"
+    say "$2" # description
+    say
+    prompt "  $3"
+    return $?
+}
+
+# Common function for most install scripts. USE THIS unless you really can't.
+# Usage: installPage title text package...
+# example: installPage 'LibreOffice suite' 'This will install libreoffice' 'libreoffice'
+installPage() {
+    local title=$"INSTALL"" ${1^^}"
+    local text="$2
+
+"$"If you choose to do this, the following packages will be installed:""
+  ${@:3}
+
+"$"Note: additional packages listed as dependencies will also be installed."
+
+    local prompt=$"Would you like to install"" $1?"
+
+    if setupPage "$title" "$text" "$prompt"; then
+        sudo apt-get install -y "${@:3}"
+    fi
+}
+
+if [[ $1 = '--firstrun' ]]; then # First run
     [[ -d /live/overlay || -e $HOME/.config/crunchbang/cb-welcome || ! $(groups) =~ ( |^)sudo( |$) ]] && exit 1
     runInTerminal
-fi
-
-# Open in terminal
-if [[ $1 = '--open' ]]; then
+elif [[ $1 = '--open' ]]; then # Open in terminal
     runInTerminal
 fi
 
 createFlag
 
 if [[ ! $(groups) =~ ( |^)sudo( |$) ]]; then
-  say 'Error: must be a member of the sudo group to run this script.' # TODO 'root' user is not a member of the sudo group. Is it meant to restrict root from executing this script?
-  exit 1
+    echo $"Error: must be a member of the sudo group to run this script." >&2 # TODO 'root' user is not a member of the sudo group. Is it meant to restrict root from executing this script?
+    exit 1
 fi
 
-LIBDIR='/usr/lib/lib-cb-welcome'
-
 if ! . cb-include.cfg 2> /dev/null; then
-    echo '  Failed to locate cb-include.cfg in PATH' >&2
+    echo $"Error: Failed to locate cb-include.cfg in PATH" >&2
     exit 1
 fi
 
 # Run through steps
-STEPS_BASIC=('apt-update' 'apt-dist-upgrade' 'install-printer-packages' 'install-java-packages' 'install-libreoffice' 'devel')
-STEPS_DEVEL=('devel-install-version-control-tools' 'devel-install-ssh-server' 'devel-install-lamp-stack' 'devel-install-packaging-tools')
 STEP=1
 (( STEPS = ${#STEPS_BASIC[@]} + ${#STEPS_DEVEL[@]} + 2 )) # 2 is intro and fini
 
-. "$LIBDIR/intro"
+. "$CB_WELCOME_LIBDIR/intro"
 clear
-connectiontest
+connectiontest # TODO pipe this into say
 
 for curStep in "${STEPS_BASIC[@]}"; do
     ((STEP++))
-    . "$LIBDIR/$curStep"
+    . "$CB_WELCOME_LIBDIR/$curStep"
 done
 
 if [[ $DEVEL ]]; then
     for curStep in "${STEPS_DEVEL[@]}"; do
         ((STEP++))
-        . "$LIBDIR/$curStep"
+        . "$CB_WELCOME_LIBDIR/$curStep"
     done
 fi
 
-. "$LIBDIR/fini"
+. "$CB_WELCOME_LIBDIR/fini"
 
 exit 0

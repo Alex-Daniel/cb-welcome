@@ -1,1 +1,3 @@
-installPage 'version control tools' 'Would you like to install some commonly used version control tools?' 'cb-meta-vcs'
+installPage $"version control tools" \
+    $"Would you like to install some commonly used version control tools?" \
+    'cb-meta-vcs'
