@@ -6,8 +6,8 @@ UPDATE_PROMPT=$"Would you like to update your software sources?"
 
 if setupPage "$UPDATE_TITLE" "$UPDATE_TEXT" "$UPDATE_PROMPT"; then
     if ! sudo apt-get update; then # TODO this check does not work sometimes
-        say
-        say $"There was a problem during the update"
+        say >&2
+        say $"There was a problem during the update" >&2
         exit 1
     fi
 else
