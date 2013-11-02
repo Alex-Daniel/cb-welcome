@@ -1,5 +1,7 @@
 #!/bin/bash
 # Post installation script
+TEXTDOMAIN=cb-welcome
+
 
 CB_WELCOME_LIBDIR='/usr/lib/lib-cb-welcome'
 STEPS_BASIC=('apt-update' 'apt-dist-upgrade' 'install-printer-packages' 'install-java-packages' 'install-libreoffice' 'devel')
@@ -43,10 +45,9 @@ setupPage() {
 # example: installPage 'LibreOffice suite' 'This will install libreoffice' 'libreoffice'
 installPage() {
     local title=$"INSTALL"" ${1^^}"
-    local text="$2
+    local text="$2 "$"If you choose to do this, the following packages will be installed:""
 
-"$"If you choose to do this, the following packages will be installed:""
-  ${@:3}
+    ${@:3}
 
 "$"Note: additional packages listed as dependencies will also be installed."
 
@@ -54,7 +55,9 @@ installPage() {
 
     if setupPage "$title" "$text" "$prompt"; then
         sudo apt-get install -y "${@:3}"
+        return 0
     fi
+    return 1
 }
 
 if [[ $1 = '--firstrun' ]]; then # First run
@@ -67,7 +70,7 @@ fi
 createFlag
 
 if [[ ! $(groups) =~ ( |^)sudo( |$) ]]; then
-    echo $"Error: must be a member of the sudo group to run this script." >&2 # TODO 'root' user is not a member of the sudo group. Is it meant to restrict root from executing this script?
+    echo $"Error: Must be a member of the sudo group to run this script" >&2 # TODO 'root' user is not a member of the sudo group. Is it meant to restrict root from executing this script?
     exit 1
 fi
 
@@ -95,7 +98,7 @@ if [[ $DEVEL ]]; then
         . "$CB_WELCOME_LIBDIR/$curStep"
     done
 fi
-
+STEP=$STEPS
 . "$CB_WELCOME_LIBDIR/fini"
 
 exit 0

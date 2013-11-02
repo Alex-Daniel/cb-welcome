@@ -1,18 +1,8 @@
-DEBIAN_DEVENV_TITLE=$"INSTALL DEVELOPER ENVIRONMENT FOR DEBIAN PACKAGING"
-DEBIAN_DEVENV_1=$"Would you like to install a suite of packages used for developing Debian packages? If you choose to do this, the following packages will be installed:"
-DEBIAN_DEVENV_2=$"Note: additional packages listed as dependencies will also be installed."
-DEBIAN_DEVENV_PROMPT=$"Whould you like to install packaging tools?"
+DEBIAN_DEVENV_TITLE=$"debian packaging tools"
+DEBIAN_DEVENV_TEXT=$"Would you like to install a suite of packages used for developing Debian packages?"
 DEBIAN_DEVENV_PBUILDER=$"Create pbuilder environment now?"
 
-if setupPage "$DEBIAN_DEVENV_TITLE" \
-    "$DEBIAN_DEVENV_1
-
-  cb-meta-packaging
-
-$DEBIAN_DEVENV_2" \
-    "$DEBIAN_DEVENV_PROMPT"; then
-    sudo apt-get install -y 'cb-meta-packaging'
-
+if installPage "$DEBIAN_DEVENV_TITLE" "$DEBIAN_DEVENV_TEXT" 'cb-meta-packaging'; then
     echo 'MIRRORSITE=http://ftp.de.debian.org/debian' | sudo tee '/etc/pbuilderrc'
     echo 'DISTRIBUTION=wheezy' | sudo tee -a '/etc/pbuilderrc'
     echo 'COMPONENTS="main contrib non-free"' >> sudo tee -a '/etc/pbuilderrc'
